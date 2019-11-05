@@ -3,8 +3,9 @@ import { View, TextInput, Text, TouchableOpacity } from "react-native";
 import styled, { css } from "styled-components";
 import { withNavigation } from "react-navigation";
 
+import { IAuthForm } from "../pages/Auth";
+
 const MainContainer = styled(View)`
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
   max-width: 400px;
   width: 80%;
   display: flex;
@@ -108,29 +109,30 @@ const ConfirmButton = styled(TouchableOpacity)`
 `;
 
 const AuthForm = ({
-  navigation
+  routeName,
+  setRouteName,
+  formData,
+  setFormData,
+  signUpHandler,
+  authHandler
 }: {
-  navigation: {
-    navigate: (path: string) => void;
-    state: {
-      routeName: string;
-    };
-  };
+  routeName: string;
+  setRouteName: (routeName: string) => void;
+  formData: IAuthForm;
+  setFormData: (data: IAuthForm) => void;
+  signUpHandler: () => void;
+  authHandler: () => void;
 }) => {
-  const { routeName } = navigation.state;
-
   const [changedInput, changeInput] = useState<string | null>(null);
 
   return (
     <MainContainer>
       <NavigationContainer>
         <NavButtonContainer isActive={routeName === "Auth"}>
-          <NavButton onPress={() => navigation.navigate("Auth")}>
-            Войти
-          </NavButton>
+          <NavButton onPress={() => setRouteName("Auth")}>Войти</NavButton>
         </NavButtonContainer>
         <NavButtonContainer isActive={routeName === "SignUp"}>
-          <NavButton onPress={() => navigation.navigate("SignUp")}>
+          <NavButton onPress={() => setRouteName("SignUp")}>
             Создать аккаунт
           </NavButton>
         </NavButtonContainer>
@@ -143,7 +145,13 @@ const AuthForm = ({
             autoCompleteType={"email"}
             placeholder={"example@example.com"}
             keyboardType={"email-address"}
-            onFocus={() => changeInput("auth")}
+            onChangeText={value => {
+              setFormData({
+                ...formData,
+                email: value
+              });
+            }}
+            onFocus={e => changeInput("auth")}
             onBlur={() => changeInput(null)}
           />
         </InputContainer>
@@ -153,11 +161,19 @@ const AuthForm = ({
             changed={changedInput === "pass"}
             autoCompleteType={"password"}
             placeholder={"********"}
+            onChangeText={value => {
+              setFormData({
+                ...formData,
+                password: value
+              });
+            }}
             onFocus={() => changeInput("pass")}
-            onBlur={() => changeInput(null)}
+            onBlur={e => changeInput(null)}
           />
         </InputContainer>
-        <ConfirmButton onPress={() => alert("123")}>
+        <ConfirmButton
+          onPress={routeName === "Auth" ? authHandler : signUpHandler}
+        >
           <Text style={{ color: "#fff" }}>
             {routeName === "Auth" ? "Войти" : "Зарегистрироватся"}
           </Text>

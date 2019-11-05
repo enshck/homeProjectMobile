@@ -1,13 +1,28 @@
-import { createAppContainer } from "react-navigation";
+import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 
 import AuthScreen from "./components/pages/Auth";
-import SignUpScreen from "./components/pages/SignUp";
+import ItemsScreen from "./components/pages/Items";
+import AuthLoadingScreen from "./components/pages/AuthLoadingScreen";
+import firebase from "./utils/firebase";
 
-const MainNavigator = createStackNavigator({
-  Auth: { screen: AuthScreen },
-  SignUp: { screen: SignUpScreen }
+const PrivateStack = createStackNavigator({
+  Items: { screen: ItemsScreen }
 });
+const PublicStack = createStackNavigator({
+  Auth: { screen: AuthScreen }
+});
+
+const MainNavigator = createSwitchNavigator(
+  {
+    Auth: PublicStack,
+    App: PrivateStack,
+    AuthLoading: AuthLoadingScreen
+  },
+  {
+    initialRouteName: "AuthLoading"
+  }
+);
 
 const App = createAppContainer(MainNavigator);
 
