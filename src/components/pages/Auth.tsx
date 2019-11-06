@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import styled from "styled-components";
-import firebase from "../../utils/firebase";
+import firebase from "react-native-firebase";
 
 import AuthForm from "../forms/authForm";
+import { errors } from "../../utils/errors";
 
 const MainContainer = styled(View)`
   width: 100%;
@@ -31,48 +32,40 @@ const Auth = () => {
     error: ""
   });
 
-  const authHandler = () => {
+  const authHandler = async () => {
     const { email, password } = formData;
 
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then(user => {
-        console.log(user);
+      .then(res => {
+        console.log(res);
       })
       .catch(err => {
         console.log(err);
-        // const error = errors[err.code];
-
-        // if (error) {
-        //   setFormData({
-        //     ...formData,
-        //     error
-        //   });
-        // }
       });
+    // try {
+    //   await firebase.auth().signInWithEmailAndPassword(email, password);
+    // } catch (err) {
+    //   console.log(err, ".>>>");
+    //   // setFormData({
+    //   //   ...formData,
+    //   //   error: errors[err]
+    //   // });
+    // }
   };
 
-  const signUpHandler = () => {
+  const signUpHandler = async () => {
     const { email, password } = formData;
 
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(user => {
-        console.log(formData, "dt");
-        // user && history.push("/items");
-      })
-      .catch(err => {
-        console.log(err, "err");
-        // const error = errors[err.code];
-        // if (error) {
-        //   setFormData({
-        //     ...formData,
-        //     error
-        //   });
-        // }
-      });
+    // try {
+    //   await firebase.auth().createUserWithEmailAndPassword(email, password);
+    // } catch (err) {
+    //   // setFormData({
+    //   //   ...formData,
+    //   //   error: errors[err]
+    //   // });
+    // }
   };
 
   return (

@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { View, ActivityIndicator, StatusBar } from "react-native";
-
-import firebase from "../../utils/firebase";
+import firebase from "react-native-firebase";
 
 const MainContainer = styled(View)`
   flex: 1;
@@ -18,20 +17,14 @@ const AuthLoadingScreen = ({
   };
 }) => {
   useEffect(() => {
-    const user = firebase.auth().currentUser;
-    console.log(user);
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        navigation.navigate("App");
+      } else {
+        navigation.navigate("Auth");
+      }
+    });
   }, []);
-
-  // const authCheck = () => {
-  //   firebase.auth().onAuthStateChanged(user => {
-  //     console.log(user);
-  //     if (user) {
-  //       navigation.navigate("App");
-  //     } else {
-  //       navigation.navigate("Auth");
-  //     }
-  //   });
-  // };
 
   return (
     <MainContainer>

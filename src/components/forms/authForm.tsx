@@ -108,6 +108,10 @@ const ConfirmButton = styled(TouchableOpacity)`
   background: rgb(70, 128, 254);
 `;
 
+const Warning = styled(Text)`
+  color: red;
+`;
+
 const AuthForm = ({
   routeName,
   setRouteName,
@@ -178,6 +182,7 @@ const AuthForm = ({
             {routeName === "Auth" ? "Войти" : "Зарегистрироватся"}
           </Text>
         </ConfirmButton>
+        {/* {formData.error.length > 0 && <Warning>{formData.error}</Warning>} */}
       </FormContainer>
     </MainContainer>
   );
