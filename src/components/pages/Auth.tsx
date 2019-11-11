@@ -32,40 +32,42 @@ const Auth = () => {
     error: ""
   });
 
-  const authHandler = async () => {
+  const authHandler = async (type: string) => {
     const { email, password } = formData;
 
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
+    if (email.length < 1) {
+      setFormData({
+        ...formData,
+        error: "Вы не ввели почту"
       });
-    // try {
-    //   await firebase.auth().signInWithEmailAndPassword(email, password);
-    // } catch (err) {
-    //   console.log(err, ".>>>");
-    //   // setFormData({
-    //   //   ...formData,
-    //   //   error: errors[err]
-    //   // });
-    // }
-  };
-
-  const signUpHandler = async () => {
-    const { email, password } = formData;
-
-    // try {
-    //   await firebase.auth().createUserWithEmailAndPassword(email, password);
-    // } catch (err) {
-    //   // setFormData({
-    //   //   ...formData,
-    //   //   error: errors[err]
-    //   // });
-    // }
+      return;
+    }
+    if (password.length < 1) {
+      setFormData({
+        ...formData,
+        error: "Вы не ввели пароль"
+      });
+      return;
+    }
+    if (type === "Auth") {
+      try {
+        await firebase.auth().signInWithEmailAndPassword(email, password);
+      } catch (err) {
+        setFormData({
+          ...formData,
+          error: errors[err.code]
+        });
+      }
+    } else {
+      try {
+        await firebase.auth().createUserWithEmailAndPassword(email, password);
+      } catch (err) {
+        setFormData({
+          ...formData,
+          error: errors[err.code]
+        });
+      }
+    }
   };
 
   return (
@@ -75,7 +77,6 @@ const Auth = () => {
         setRouteName={setRouteName}
         formData={formData}
         setFormData={setFormData}
-        signUpHandler={signUpHandler}
         authHandler={authHandler}
       />
     </MainContainer>

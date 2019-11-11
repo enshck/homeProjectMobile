@@ -19,7 +19,9 @@ const AuthLoadingScreen = ({
   useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        navigation.navigate("App");
+        navigation.navigate("App", {
+          itemId: 86
+        });
       } else {
         navigation.navigate("Auth");
       }
