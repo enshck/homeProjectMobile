@@ -20,7 +20,9 @@ const AuthLoadingScreen = ({
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         navigation.navigate("App", {
-          itemId: 86
+          param: {
+            qwe: "qwe"
+          }
         });
       } else {
         navigation.navigate("Auth");

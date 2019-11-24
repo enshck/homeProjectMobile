@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { createStackNavigator } from "react-navigation-stack";
@@ -14,6 +14,7 @@ import productIcon from "./img/product.png";
 import basketIcon from "./img/basket.png";
 import exit from "./img/exit.png";
 import { signOutHandler } from "./utils/handlers";
+import { IOrdersReducers, IOrderElement } from "./utils/interfaces";
 
 const NavImage = styled(Image)`
   width: 25px;
@@ -33,8 +34,8 @@ const getTabBarIcon = (navigation: any) => {
 
 const PrivateStack = createBottomTabNavigator(
   {
-    // ...(false ? { Корзина: { screen: BasketScreen } } : {}),
     Товары: { screen: ItemsScreen },
+    // ...(true ? { Корзина: { screen: BasketScreen } } : {}),
     Корзина: { screen: BasketScreen },
     Выход: () => {
       signOutHandler();
@@ -46,13 +47,13 @@ const PrivateStack = createBottomTabNavigator(
       return {
         tabBarIcon: () => getTabBarIcon(navigation),
         tabBarOnPress: ({
-          navigation,
+          // navigation,
           defaultHandler
         }: {
-          navigation: any;
+          // navigation: any;
           defaultHandler: any;
         }) => {
-          console.log(JSON.stringify(navigation.getParam("itemId", "NO-ID")));
+          // console.log(navigation);
           defaultHandler();
           // if (navigation.routeName !== "Корзина") {
           // }
