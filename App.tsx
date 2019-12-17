@@ -3,11 +3,14 @@ import { Provider } from "react-redux";
 
 import store from "./src/store";
 import Routes from "./src/Routes";
+import MainWrapper from "./src/components/mainWrapper";
 
 const App = () => {
   return (
     <Provider store={store}>
-      <Routes />
+      <MainWrapper>
+        <Routes />
+      </MainWrapper>
     </Provider>
   );
 };

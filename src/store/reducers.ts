@@ -24,6 +24,7 @@ const sortTypeReducers = (state = "list", action: any) => {
 const ordersReducers = (state = [], action: any) => {
   switch (action.type) {
     case types.SET_ORDERS: {
+      console.log(action.orders);
       return action.orders.ordersData || [];
     }
     default:

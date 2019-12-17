@@ -14,10 +14,6 @@ export interface IGoodsData {
   price: string;
 }
 
-export interface IDataReducers {
-  some: string;
-}
-
 export interface IOrderElement {
   count: number;
   goodsData: IGoodsData;
@@ -25,4 +21,19 @@ export interface IOrderElement {
 
 export interface IOrdersReducers {
   orders: IOrderElement[];
+}
+
+export interface IProfile {
+  email: string;
+  displayName: string;
+  uid: string;
+  phoneNumber: string;
+}
+
+export interface IProfileReducers {
+  profile: IProfile;
+}
+
+export interface IGoodsReducers {
+  goods: IGoodsData[];
 }

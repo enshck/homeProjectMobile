@@ -17,15 +17,20 @@ const AuthLoadingScreen = ({
   };
 }) => {
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged(async user => {
       if (user) {
-        navigation.navigate("App", {
-          param: {
-            qwe: "qwe"
-          }
-        });
+        firebase
+          .firestore()
+          .collection("successOrders")
+          .get()
+          .then(() => {
+            navigation.navigate("ProtectedStack");
+          })
+          .catch(() => {
+            navigation.navigate("PrivateStack");
+          });
       } else {
-        navigation.navigate("Auth");
+        navigation.navigate("PublicStack");
       }
     });
   }, []);

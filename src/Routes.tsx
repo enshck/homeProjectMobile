@@ -1,5 +1,4 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { createStackNavigator } from "react-navigation-stack";
@@ -10,11 +9,11 @@ import AuthScreen from "./components/pages/Auth";
 import ItemsScreen from "./components/pages/Items";
 import BasketScreen from "./components/pages/BasketProduct";
 import AuthLoadingScreen from "./components/pages/AuthLoadingScreen";
+import AdminScreen from "./components/pages/adminPanel";
 import productIcon from "./img/product.png";
 import basketIcon from "./img/basket.png";
 import exit from "./img/exit.png";
 import { signOutHandler } from "./utils/handlers";
-import { IOrdersReducers, IOrderElement } from "./utils/interfaces";
 
 const NavImage = styled(Image)`
   width: 25px;
@@ -35,7 +34,6 @@ const getTabBarIcon = (navigation: any) => {
 const PrivateStack = createBottomTabNavigator(
   {
     Товары: { screen: ItemsScreen },
-    // ...(true ? { Корзина: { screen: BasketScreen } } : {}),
     Корзина: { screen: BasketScreen },
     Выход: () => {
       signOutHandler();
@@ -45,19 +43,29 @@ const PrivateStack = createBottomTabNavigator(
   {
     defaultNavigationOptions: ({ navigation }: { navigation: any }) => {
       return {
-        tabBarIcon: () => getTabBarIcon(navigation),
-        tabBarOnPress: ({
-          // navigation,
-          defaultHandler
-        }: {
-          // navigation: any;
-          defaultHandler: any;
-        }) => {
-          // console.log(navigation);
-          defaultHandler();
-          // if (navigation.routeName !== "Корзина") {
-          // }
-        }
+        tabBarIcon: () => getTabBarIcon(navigation)
+      };
+    },
+    tabBarOptions: {
+      activeTintColor: "tomato",
+      inactiveTintColor: "gray"
+    }
+  }
+);
+const ProtectedStack = createBottomTabNavigator(
+  {
+    Товары: { screen: ItemsScreen },
+    Админ: { screen: AdminScreen },
+    Корзина: { screen: BasketScreen },
+    Выход: () => {
+      signOutHandler();
+      return null;
+    }
+  },
+  {
+    defaultNavigationOptions: ({ navigation }: { navigation: any }) => {
+      return {
+        tabBarIcon: () => getTabBarIcon(navigation)
       };
     },
     tabBarOptions: {
@@ -72,8 +80,9 @@ const PublicStack = createStackNavigator({
 
 const MainNavigator = createSwitchNavigator(
   {
-    Auth: PublicStack,
-    App: PrivateStack,
+    PublicStack,
+    PrivateStack,
+    ProtectedStack,
     AuthLoading: AuthLoadingScreen
   },
   {
