@@ -5,32 +5,39 @@ import {
   GoodElement,
   ItemImage,
   ItemName,
-  ItemId
+  ItemId,
+  Details,
+  ButtonBuyContainer,
+  Price
 } from "./styles";
-import { useSelector, useDispatch } from "react-redux";
+import { ButtonBuy } from "../../../../constants/styles";
+import { useSelector } from "react-redux";
 import { IGoodsData, IGoodsReducers } from "../../../../utils/interfaces";
 
 const GoodsContainer = () => {
   const goodsData = useSelector<IGoodsReducers, IGoodsData[]>(
     state => state.goods
   );
-
-  console.log(goodsData, ">><<<");
   return (
-    <MainContainer>
-      {goodsData.map(elem => {
+    <MainContainer contentContainerStyle={{ alignItems: "center" }}>
+      {goodsData.map((elem, key) => {
         const { goodId, goodName, isSale, parametrs, pictureUrl, price } = elem;
 
         return (
-          <GoodElement>
+          <GoodElement key={key}>
             <ItemImage
-              // style={{ resizeMode: "cover" }}
               source={{
                 uri: pictureUrl
               }}
+              resizeMode={"contain"}
             />
             <ItemName>{goodName}</ItemName>
-            <ItemId>{goodId}</ItemId>
+            <ItemId>Идентификатор: {goodId}</ItemId>
+            <Price>${price}</Price>
+            <Details>Подробнее</Details>
+            <ButtonBuyContainer>
+              <ButtonBuy>Купить</ButtonBuy>
+            </ButtonBuyContainer>
           </GoodElement>
         );
       })}
