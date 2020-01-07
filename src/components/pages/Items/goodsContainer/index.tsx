@@ -1,4 +1,5 @@
 import React from "react";
+import { withNavigation } from "react-navigation";
 
 import {
   MainContainer,
@@ -14,7 +15,13 @@ import { ButtonBuy } from "../../../../constants/styles";
 import { useSelector } from "react-redux";
 import { IGoodsData, IGoodsReducers } from "../../../../utils/interfaces";
 
-const GoodsContainer = () => {
+interface IProps {
+  navigation: {
+    navigate: (screen: string, params?: any) => void;
+  };
+}
+
+const GoodsContainer = ({ navigation }: IProps) => {
   const goodsData = useSelector<IGoodsReducers, IGoodsData[]>(
     state => state.goods
   );
@@ -34,7 +41,9 @@ const GoodsContainer = () => {
             <ItemName>{goodName}</ItemName>
             <ItemId>Идентификатор: {goodId}</ItemId>
             <Price>${price}</Price>
-            <Details>Подробнее</Details>
+            <Details onPress={() => navigation.navigate("DetailsItem", elem)}>
+              Подробнее
+            </Details>
             <ButtonBuyContainer>
               <ButtonBuy>Купить</ButtonBuy>
             </ButtonBuyContainer>
@@ -45,4 +54,4 @@ const GoodsContainer = () => {
   );
 };
 
-export default GoodsContainer;
+export default withNavigation(GoodsContainer);
