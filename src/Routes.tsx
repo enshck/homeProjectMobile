@@ -2,7 +2,7 @@ import React from "react";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { createStackNavigator } from "react-navigation-stack";
-import { Image, Text, View } from "react-native";
+import { Image, Text, View, Button, TouchableHighlight } from "react-native";
 import styled from "styled-components";
 
 import AuthScreen from "./components/pages/Auth";
@@ -14,6 +14,7 @@ import ItemDetail from "./components/pages/ItemDetail";
 import productIcon from "./img/product.png";
 import basketIcon from "./img/basket.png";
 import exit from "./img/exit.png";
+import arrowLeft from "./img/arrowLeft.png";
 import { signOutHandler } from "./utils/handlers";
 
 const NavImage = styled(Image)`
@@ -23,6 +24,12 @@ const NavImage = styled(Image)`
 
 const HeaderTitle = styled(Text)`
   width: 100%;
+`;
+
+const ArrowLeftPicture = styled(Image)`
+  height: 32px;
+  width: 28px;
+  margin-left: 10px;
 `;
 
 const getTabBarIcon = (navigation: any) => {
@@ -88,7 +95,9 @@ const DetailsItemStack = createStackNavigator({
     screen: ItemDetail,
     navigationOptions: ({ navigation }) => ({
       headerLeft: () => (
-        <Text onPress={() => navigation.navigate("Товары")}>Back</Text>
+        <TouchableHighlight onPress={() => navigation.navigate("Товары")}>
+          <ArrowLeftPicture source={arrowLeft} />
+        </TouchableHighlight>
       ),
       title: navigation.state.params.goodName,
       headerTitleStyle: {
