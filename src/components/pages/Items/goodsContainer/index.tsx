@@ -1,5 +1,6 @@
 import React from "react";
 import { withNavigation } from "react-navigation";
+import { useSelector, useDispatch } from "react-redux";
 
 import {
   MainContainer,
@@ -12,8 +13,16 @@ import {
   Price
 } from "./styles";
 import { ButtonBuy } from "../../../../constants/styles";
-import { useSelector } from "react-redux";
-import { IGoodsData, IGoodsReducers } from "../../../../utils/interfaces";
+import {
+  IGoodsData,
+  IGoodsReducers,
+  IOrdersReducers,
+  IOrderElement,
+  IProfile,
+  IProfileReducers
+} from "../../../../utils/interfaces";
+import { buyButtonHandler } from "../../../../utils/handlers";
+import { setOrders } from "../../../../store/actions";
 
 interface IProps {
   navigation: {
@@ -25,6 +34,14 @@ const GoodsContainer = ({ navigation }: IProps) => {
   const goodsData = useSelector<IGoodsReducers, IGoodsData[]>(
     state => state.goods
   );
+  const orders = useSelector<IOrdersReducers, IOrderElement[]>(
+    state => state.orders
+  );
+  const profile = useSelector<IProfileReducers, IProfile>(
+    state => state.profile
+  );
+  const dispatch = useDispatch();
+
   return (
     <MainContainer contentContainerStyle={{ alignItems: "center" }}>
       {goodsData.map((elem, key) => {
@@ -45,7 +62,18 @@ const GoodsContainer = ({ navigation }: IProps) => {
               Подробнее
             </Details>
             <ButtonBuyContainer>
-              <ButtonBuy>Купить</ButtonBuy>
+              <ButtonBuy
+                onPress={() =>
+                  buyButtonHandler({
+                    orders: orders,
+                    singleGood: elem,
+                    profile,
+                    setOrders: orders => dispatch(setOrders(orders))
+                  })
+                }
+              >
+                Купить
+              </ButtonBuy>
             </ButtonBuyContainer>
           </GoodElement>
         );

@@ -1,5 +1,6 @@
 import React from "react";
 import { withNavigation } from "react-navigation";
+import { useSelector, useDispatch } from "react-redux";
 
 import {
   MainContainer,
@@ -12,16 +13,34 @@ import {
   ButtonBuyContainer
 } from "./styles";
 import { ButtonBuy } from "../../../constants/styles";
+import { setOrders } from "../../../store/actions";
+import { buyButtonHandler } from "../../../utils/handlers";
+import {
+  IGoodsReducers,
+  IGoodsData,
+  IOrderElement,
+  IOrdersReducers,
+  IProfileReducers,
+  IProfile
+} from "../../../utils/interfaces";
 
-interface IProps {
-  // route: any;
-  // navigation: any;
-}
+interface IProps {}
 
 const ItemDetail = ({ route, navigation }: IProps) => {
   const { params } = navigation.state;
   const { goodId, goodName, isSale, parametrs, pictureUrl, price } = params;
   const { color, internalMem, ram, sizeScreen, weight } = parametrs;
+
+  const goodsData = useSelector<IGoodsReducers, IGoodsData[]>(
+    state => state.goods
+  );
+  const orders = useSelector<IOrdersReducers, IOrderElement[]>(
+    state => state.orders
+  );
+  const profile = useSelector<IProfileReducers, IProfile>(
+    state => state.profile
+  );
+  const dispatch = useDispatch();
 
   return (
     <MainContainer>
@@ -51,7 +70,18 @@ const ItemDetail = ({ route, navigation }: IProps) => {
         renderItem={({ item }) => <FeatureItem>{item}</FeatureItem>}
       />
       <ButtonBuyContainer>
-        <ButtonBuy>Купить</ButtonBuy>
+        <ButtonBuy
+          onPress={() =>
+            buyButtonHandler({
+              orders: orders,
+              singleGood: params,
+              profile,
+              setOrders: orders => dispatch(setOrders(orders))
+            })
+          }
+        >
+          Купить
+        </ButtonBuy>
       </ButtonBuyContainer>
     </MainContainer>
   );

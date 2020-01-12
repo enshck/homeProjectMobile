@@ -2,8 +2,9 @@ import React from "react";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { createStackNavigator } from "react-navigation-stack";
-import { Image, Text, View, Button, TouchableHighlight } from "react-native";
+import { Image, Text, View, TouchableHighlight } from "react-native";
 import styled from "styled-components";
+import { connect } from "react-redux";
 
 import AuthScreen from "./components/pages/Auth";
 import ItemsScreen from "./components/pages/Items";
@@ -22,22 +23,52 @@ const NavImage = styled(Image)`
   height: 25px;
 `;
 
-const HeaderTitle = styled(Text)`
-  width: 100%;
-`;
-
 const ArrowLeftPicture = styled(Image)`
   height: 32px;
   width: 28px;
   margin-left: 10px;
 `;
 
+const CountOrdersContainer = styled(View)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24;
+  height: 24;
+  border-radius: 24;
+  background: rgb(251, 63, 76);
+  position: absolute;
+  right: -15px;
+  top: -15px;
+`;
+
+const CountOrdersText = styled(Text)`
+  color: #fff;
+`;
+
+const BasketMainContainer = styled(View)`
+  position: relative;
+`;
+
+const CountOrdersMainContainer = connect(state => ({
+  value: state.orders.length
+}))(({ value }) => (
+  <CountOrdersContainer>
+    <CountOrdersText>{value}</CountOrdersText>
+  </CountOrdersContainer>
+));
+
 const getTabBarIcon = (navigation: any) => {
   const { routeName } = navigation.state;
   if (routeName === "Товары") {
     return <NavImage source={productIcon} />;
   } else if (routeName === "Корзина") {
-    return <NavImage source={basketIcon} />;
+    return (
+      <BasketMainContainer>
+        <NavImage source={basketIcon} />
+        <CountOrdersMainContainer />
+      </BasketMainContainer>
+    );
   } else if (routeName === "Выход") {
     return <NavImage source={exit} />;
   }
