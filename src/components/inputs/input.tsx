@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Image, Text } from "react-native";
-
 import styled from "styled-components";
 
 const MainContainer = styled(View)`
@@ -25,6 +24,30 @@ const ErrorMessage = styled(Text)`
   max-width: 450px;
 `;
 
+interface IProps {
+  beforeIcon?: string;
+  errors?: {
+    [key: string]: string;
+  };
+  placeholder?: string;
+  StyledComponent: any;
+  onBlur?: (e: any, name: string) => void;
+  name: string;
+  defaultValue?: string | number;
+  value?: string | number;
+  keyboardType: string;
+  onPress?: (e: any, name: string) => void;
+  onKeyPress?: (e: any, name: string) => void;
+  checked?: boolean;
+  changed?: string;
+  autoComplete?: boolean;
+  onInput?: (e: any, name: string) => void;
+  maxLength?: number;
+  multiple?: boolean;
+  autoFocus?: boolean;
+  isBlocked?: boolean;
+}
+
 const Input = ({
   beforeIcon,
   errors,
@@ -34,34 +57,40 @@ const Input = ({
   name,
   defaultValue,
   value,
-  type,
-  onClick,
+  keyboardType,
+  onPress,
   checked,
   changed,
-  onChange,
   autoComplete,
   onInput,
   maxLength,
   multiple,
   autoFocus,
-  isBlocked
-}) => {
+  isBlocked,
+  onKeyPress
+}: IProps) => {
   return (
     <MainContainer>
       <InputContainer>
-        {beforeIcon && <BeforeIcon source={beforeIcon} />}
+        {beforeIcon && (
+          <BeforeIcon
+            source={{
+              uri: beforeIcon
+            }}
+          />
+        )}
         <StyledComponent
           placeholder={placeholder}
-          onBlur={e => onBlur && onBlur(e, name)}
-          onClick={e => onClick && onClick(e, name)}
+          onBlur={(e: any) => onBlur && onBlur(e, name)}
+          onPress={(e: any) => onPress && onPress(e, name)}
           checked={checked}
           id={name}
           value={value && value}
           name={name}
-          onChange={onChange && onChange}
-          onInput={e => onInput && onInput(e, name)}
+          onInput={(e: any) => onInput && onInput(e, name)}
+          onKeyPress={(e: any) => onKeyPress && onKeyPress(e, name)}
           defaultValue={defaultValue}
-          type={type}
+          keyboardType={keyboardType}
           changed={changed === name}
           autoComplete={autoComplete}
           maxLength={maxLength && maxLength}
@@ -69,6 +98,7 @@ const Input = ({
           autoFocus={autoFocus}
           disabled={isBlocked}
           error={errors && errors[name]}
+          // onChangedText={(text: string) => console.log(text, "<<<<")}
         />
       </InputContainer>
       {errors && errors[name] && <ErrorMessage>{errors[name]}</ErrorMessage>}

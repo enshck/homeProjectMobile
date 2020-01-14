@@ -17,12 +17,14 @@ import plus from "../../../../img/plusOrder.png";
 import minus from "../../../../img/minusOrder.png";
 import Input from "../../../../components/inputs/input";
 
-const BasketContainer = () => {
+interface IProps {
+  updateOrderCountHandler: (newCount: number, order: IOrderElement) => void;
+}
+
+const BasketContainer = ({ updateOrderCountHandler }: IProps) => {
   const orders = useSelector<IOrdersReducers, IOrderElement[]>(
     state => state.orders
   );
-
-  console.log(orders, ">>>");
 
   return (
     <MainContainer contentContainerStyle={{ alignItems: "center" }}>
@@ -38,8 +40,6 @@ const BasketContainer = () => {
           id
         } = goodsData;
         const { color, internalMem, ram, sizeScreen, weight } = parametrs;
-
-        const updateOrderCountHandler = () => {};
 
         return (
           <OrderElement key={goodId}>
@@ -58,14 +58,18 @@ const BasketContainer = () => {
                 //     updateOrderCountHandler(count - 1, elem)
                 //   }
               />
-              {/* <Input
+              <Input
                 StyledComponent={ControlInput}
-                onInput={updateOrderCountHandler}
-                defaultValue={count}
+                onKeyPress={
+                  (e, name) => console.log(e.target, name)
+
+                  // updateOrderCountHandler(e.target.value, elem)
+                }
+                defaultValue={count + ""}
                 name="orderCount"
-                type="text"
+                keyboardType="numeric"
                 // errors={loginData.errors}
-              /> */}
+              />
               {/* <ControlInput
                           warning={count < 1 || count > 999}
                           defaultValue={count}

@@ -51,6 +51,7 @@ export const CountControlContainer = styled(View)`
   display: flex;
   flex-direction: row;
   margin-top: 20px;
+  align-items: center;
 `;
 
 export const ControlButtons = styled(Image)`
@@ -59,17 +60,14 @@ export const ControlButtons = styled(Image)`
 `;
 
 export const ControlInput = styled(TextInput)`
-  /* text-align: center;
+  text-align: center;
   background-color: #fff;
   width: 68px;
   height: 28px;
-  line-height: 28px;
   margin: 0 9px;
   padding: 5px;
   border: 1px solid #d2d2d2;
   border-radius: 4px;
   font-size: 15px;
-  resize: none;
   color: #4d4b4b;
-  outline: none; */
 `;
