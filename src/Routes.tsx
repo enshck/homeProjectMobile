@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 
 import AuthScreen from "./components/pages/Auth";
 import ItemsScreen from "./components/pages/Items";
-import BasketScreen from "./components/pages/BasketProduct";
+import BasketScreen from "./components/pages/basketProduct";
 import AuthLoadingScreen from "./components/pages/AuthLoadingScreen";
 import AdminScreen from "./components/pages/adminPanel";
 import ItemDetail from "./components/pages/ItemDetail";
