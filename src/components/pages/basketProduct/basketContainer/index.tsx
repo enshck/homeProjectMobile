@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "react-native";
+import { TouchableHighlight } from "react-native";
 import { useSelector } from "react-redux";
 
 import {
@@ -10,7 +10,9 @@ import {
   Price,
   CountControlContainer,
   ControlButtons,
-  ControlInput
+  ControlInput,
+  DeleteOrderButtom,
+  DeletePicture
 } from "./styles";
 import { IOrdersReducers, IOrderElement } from "../../../../utils/interfaces";
 import plus from "../../../../img/plusOrder.png";
@@ -18,10 +20,17 @@ import minus from "../../../../img/minusOrder.png";
 import Input from "../../../../components/inputs/input";
 
 interface IProps {
-  updateOrderCountHandler: (newCount: number, order: IOrderElement) => void;
+  updateOrderCountHandler: (
+    newCount: number | string,
+    order: IOrderElement
+  ) => void;
+  deleteOrderHandler: (order: IOrderElement) => void;
 }
 
-const BasketContainer = ({ updateOrderCountHandler }: IProps) => {
+const BasketContainer = ({
+  updateOrderCountHandler,
+  deleteOrderHandler
+}: IProps) => {
   const orders = useSelector<IOrdersReducers, IOrderElement[]>(
     state => state.orders
   );
@@ -30,19 +39,13 @@ const BasketContainer = ({ updateOrderCountHandler }: IProps) => {
     <MainContainer contentContainerStyle={{ alignItems: "center" }}>
       {orders.map(elem => {
         const { goodsData, count } = elem;
-        const {
-          goodName,
-          isSale,
-          goodId,
-          parametrs,
-          pictureUrl,
-          price,
-          id
-        } = goodsData;
-        const { color, internalMem, ram, sizeScreen, weight } = parametrs;
+        const { goodName, goodId, pictureUrl, price } = goodsData;
 
         return (
           <OrderElement key={goodId}>
+            <DeleteOrderButtom onPress={() => deleteOrderHandler(elem)}>
+              <DeletePicture source={plus} />
+            </DeleteOrderButtom>
             <ItemPicture
               source={{
                 uri: pictureUrl
@@ -52,37 +55,26 @@ const BasketContainer = ({ updateOrderCountHandler }: IProps) => {
             <Name>{goodName}</Name>
             <Price>${price}</Price>
             <CountControlContainer>
-              <ControlButtons
-                source={minus}
-                //   onClick={() =>
-                //     updateOrderCountHandler(count - 1, elem)
-                //   }
-              />
+              <TouchableHighlight
+                onPress={() => updateOrderCountHandler(count - 1, elem)}
+              >
+                <ControlButtons source={minus} />
+              </TouchableHighlight>
+
               <Input
                 StyledComponent={ControlInput}
-                onKeyPress={
-                  (e, name) => console.log(e.target, name)
-
-                  // updateOrderCountHandler(e.target.value, elem)
+                onChangeText={(text, name) =>
+                  updateOrderCountHandler(text, elem)
                 }
                 defaultValue={count + ""}
                 name="orderCount"
                 keyboardType="numeric"
-                // errors={loginData.errors}
               />
-              {/* <ControlInput
-                          warning={count < 1 || count > 999}
-                          defaultValue={count}
-                          onBlur={e =>
-                            updateOrderCountHandler(+e.target.value, elem)
-                          }
-                        /> */}
-              <ControlButtons
-                source={plus}
-                //   onClick={() =>
-                //     updateOrderCountHandler(count + 1, elem)
-                //   }
-              />
+              <TouchableHighlight
+                onPress={() => updateOrderCountHandler(count + 1, elem)}
+              >
+                <ControlButtons source={plus} />
+              </TouchableHighlight>
             </CountControlContainer>
           </OrderElement>
         );

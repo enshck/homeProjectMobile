@@ -5,12 +5,14 @@ import {
   Dimensions,
   Image,
   Text,
-  TextInput
+  TextInput,
+  TouchableHighlight
 } from "react-native";
 
 export const MainContainer = styled(ScrollView)`
   position: relative;
   display: flex;
+  width: ${Dimensions.get("window").width};
 `;
 
 export const OrderElement = styled(View)`
@@ -19,11 +21,12 @@ export const OrderElement = styled(View)`
   display: flex;
   align-items: center;
   background: #fff;
-  margin-top: 10px;
   border-width: 1px;
   border-style: solid;
   border-color: rgb(234, 234, 234);
   overflow: hidden;
+  margin: 0 0 10px 0;
+  position: relative;
 `;
 
 export const ItemPicture = styled(Image)`
@@ -70,4 +73,20 @@ export const ControlInput = styled(TextInput)`
   border-radius: 4px;
   font-size: 15px;
   color: #4d4b4b;
+`;
+
+export const DeleteOrderButtom = styled(TouchableHighlight)`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+`;
+
+export const DeletePicture = styled(Image)`
+  transform: rotate(45deg);
 `;

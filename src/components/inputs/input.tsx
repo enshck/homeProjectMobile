@@ -46,6 +46,7 @@ interface IProps {
   multiple?: boolean;
   autoFocus?: boolean;
   isBlocked?: boolean;
+  onChangeText?: (text: string | number, name: string) => void;
 }
 
 const Input = ({
@@ -67,7 +68,8 @@ const Input = ({
   multiple,
   autoFocus,
   isBlocked,
-  onKeyPress
+  onKeyPress,
+  onChangeText
 }: IProps) => {
   return (
     <MainContainer>
@@ -89,6 +91,9 @@ const Input = ({
           name={name}
           onInput={(e: any) => onInput && onInput(e, name)}
           onKeyPress={(e: any) => onKeyPress && onKeyPress(e, name)}
+          onChangeText={(text: string | number) =>
+            onChangeText && onChangeText(text, name)
+          }
           defaultValue={defaultValue}
           keyboardType={keyboardType}
           changed={changed === name}
