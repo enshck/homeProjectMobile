@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, ActivityIndicator, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
+import moment from "moment";
 
 import BasketContainer from "./basketContainer";
 import {
@@ -24,6 +25,7 @@ const MainContainer = styled(View)`
 
 const BasketProduct = () => {
   const [isFetching, setFetching] = useState(false);
+  const [summaryOrderPrice, setSummaryOrderPrice] = useState<number>(0);
   const dispatch = useDispatch();
 
   const orders = useSelector<IOrdersReducers, IOrderElement[]>(
@@ -33,6 +35,14 @@ const BasketProduct = () => {
   const profile = useSelector<IProfileReducers, IProfile>(
     state => state.profile
   );
+
+  useEffect(() => {
+    let sum: number = 0;
+    orders.forEach(({ count, goodsData }: IOrderElement) => {
+      sum = sum + +goodsData.price * count;
+    });
+    setSummaryOrderPrice(+sum.toFixed(2));
+  }, [orders]);
 
   const updateOrderCountHandler = (
     newCount: number | string,
@@ -92,6 +102,46 @@ const BasketProduct = () => {
       .catch(err => console.log(err));
   };
 
+  const submitHandlerOrder = async () => {
+    const data = {
+      orders,
+      status: "ordered",
+      date: moment().format("YYYY-MM-DD"),
+      summaryOrder: summaryOrderPrice,
+      userName: profile.displayName || profile.email || profile.phoneNumber
+    };
+
+    console.log(data, ">>>");
+
+    // try {
+    //   const response = await firebase
+    //     .firestore()
+    //     .collection("successOrders")
+    //     .add(data);
+    //   if (response.id) {
+    //     await firebase
+    //       .firestore()
+    //       .collection("successOrders")
+    //       .doc(response.id)
+    //       .update({
+    //         ...data,
+    //         id: response.id
+    //       });
+    //     firebase
+    //       .firestore()
+    //       .collection("orders")
+    //       .doc(profile.uid)
+    //       .delete()
+    //       .then(res => {
+    //         dispatch(setOrders([]));
+    //         // setOrderStatus(true);
+    //       });
+    //   }
+    // } catch (err) {
+    //   return;
+    // }
+  };
+
   return (
     <MainContainer>
       {isFetching ? (
@@ -100,6 +150,8 @@ const BasketProduct = () => {
         <BasketContainer
           updateOrderCountHandler={updateOrderCountHandler}
           deleteOrderHandler={deleteOrderHandler}
+          summaryOrderPrice={summaryOrderPrice}
+          submitHandlerOrder={submitHandlerOrder}
         />
       )}
     </MainContainer>

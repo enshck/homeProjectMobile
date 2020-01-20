@@ -9,6 +9,8 @@ import {
   TouchableHighlight
 } from "react-native";
 
+import { ButtonBuy } from "../../../../constants/styles";
+
 export const MainContainer = styled(ScrollView)`
   position: relative;
   display: flex;
@@ -89,4 +91,34 @@ export const DeleteOrderButtom = styled(TouchableHighlight)`
 
 export const DeletePicture = styled(Image)`
   transform: rotate(45deg);
+`;
+
+export const SummaryOrder = styled(View)`
+  position: absolute;
+  top: 0px;
+  left: 0;
+  background: #fef2b8;
+  width: 100%;
+  padding: 5px;
+  /* box-sizing: border-box; */
+  /* border-radius: 0 0 8px 8px; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  /* justify-content: space-between; */
+  z-index: 999;
+`;
+
+export const SubmitButton = styled(ButtonBuy)`
+  /* width: 50px; */
+  padding: 4px 10px;
+`;
+
+export const SumaryPriceText = styled(Text)`
+  font-size: 15px;
+`;
+
+export const SummaryPrice = styled(Text)`
+  font-weight: 800;
 `;

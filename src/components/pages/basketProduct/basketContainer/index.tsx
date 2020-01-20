@@ -12,7 +12,11 @@ import {
   ControlButtons,
   ControlInput,
   DeleteOrderButtom,
-  DeletePicture
+  DeletePicture,
+  SummaryOrder,
+  SubmitButton,
+  SumaryPriceText,
+  SummaryPrice
 } from "./styles";
 import { IOrdersReducers, IOrderElement } from "../../../../utils/interfaces";
 import plus from "../../../../img/plusOrder.png";
@@ -25,11 +29,15 @@ interface IProps {
     order: IOrderElement
   ) => void;
   deleteOrderHandler: (order: IOrderElement) => void;
+  summaryOrderPrice: number;
+  submitHandlerOrder: () => void;
 }
 
 const BasketContainer = ({
   updateOrderCountHandler,
-  deleteOrderHandler
+  deleteOrderHandler,
+  summaryOrderPrice,
+  submitHandlerOrder
 }: IProps) => {
   const orders = useSelector<IOrdersReducers, IOrderElement[]>(
     state => state.orders
@@ -37,6 +45,12 @@ const BasketContainer = ({
 
   return (
     <MainContainer contentContainerStyle={{ alignItems: "center" }}>
+      <SummaryOrder>
+        <SumaryPriceText>
+          Вместе: <SummaryPrice>{summaryOrderPrice}$</SummaryPrice>
+        </SumaryPriceText>
+        <SubmitButton onPress={submitHandlerOrder}>Оформить заказ</SubmitButton>
+      </SummaryOrder>
       {orders.map(elem => {
         const { goodsData, count } = elem;
         const { goodName, goodId, pictureUrl, price } = goodsData;
