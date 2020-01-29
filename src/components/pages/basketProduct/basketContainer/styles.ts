@@ -11,10 +11,13 @@ import {
 
 import { ButtonBuy } from "../../../../constants/styles";
 
+export const MainBasketContainer = styled(View)``;
+
 export const MainContainer = styled(ScrollView)`
   position: relative;
   display: flex;
   width: ${Dimensions.get("window").width};
+  margin-top: 60px;
 `;
 
 export const OrderElement = styled(View)`
@@ -99,26 +102,32 @@ export const SummaryOrder = styled(View)`
   left: 0;
   background: #fef2b8;
   width: 100%;
-  padding: 5px;
-  /* box-sizing: border-box; */
-  /* border-radius: 0 0 8px 8px; */
+  padding: 10px 5px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  /* justify-content: space-between; */
-  z-index: 999;
+  z-index: 9999;
 `;
 
 export const SubmitButton = styled(ButtonBuy)`
-  /* width: 50px; */
   padding: 4px 10px;
+  margin: 0;
+  font-size: 18px;
 `;
 
 export const SumaryPriceText = styled(Text)`
-  font-size: 15px;
+  font-size: 16px;
+  margin: 0;
 `;
 
 export const SummaryPrice = styled(Text)`
   font-weight: 800;
+`;
+
+export const NoOrdersMessage = styled(Text)`
+  margin-top: ${Dimensions.get("window").height / 3};
+  font-size: 18px;
+  font-weight: 800;
+  text-align: center;
 `;

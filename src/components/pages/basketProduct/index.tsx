@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, ActivityIndicator, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import moment from "moment";
 
 import BasketContainer from "./basketContainer";
+import OrderSuccessScreen from "./orderSuccessScreen";
 import {
   IOrderElement,
   IOrdersReducers,
@@ -23,9 +24,22 @@ const MainContainer = styled(View)`
   width: ${Dimensions.get("window").width};
 `;
 
+const debounce = (delay: number) => {
+  let debounceTimer: any;
+  return (onClickHandler: () => void) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => onClickHandler(), delay);
+  };
+};
+
+const updateOrderDebounceHandler = debounce(1000);
+
 const BasketProduct = () => {
   const [isFetching, setFetching] = useState(false);
+  const [isOrderSuccess, setOrderSuccess] = useState(false);
   const [summaryOrderPrice, setSummaryOrderPrice] = useState<number>(0);
+  const [ordersData, setOrdersData] = useState<IOrderElement[]>([]);
+
   const dispatch = useDispatch();
 
   const orders = useSelector<IOrdersReducers, IOrderElement[]>(
@@ -37,40 +51,50 @@ const BasketProduct = () => {
   );
 
   useEffect(() => {
+    setOrdersData(orders);
+  }, [orders]);
+
+  useEffect(() => {
     let sum: number = 0;
-    orders.forEach(({ count, goodsData }: IOrderElement) => {
+    ordersData.forEach(({ count, goodsData }: IOrderElement) => {
       sum = sum + +goodsData.price * count;
     });
     setSummaryOrderPrice(+sum.toFixed(2));
-  }, [orders]);
+  }, [ordersData]);
 
   const updateOrderCountHandler = (
     newCount: number | string,
     order: IOrderElement
   ) => {
-    setFetching(true);
     if (newCount > 0 && newCount < 1000) {
-      orders.forEach((elem, item) => {
+      const ordersClone = [...ordersData];
+      ordersClone.forEach((elem, item) => {
         const { goodsData } = elem;
         if (goodsData.goodId === order.goodsData.goodId) {
-          orders[item].count = +newCount;
+          ordersClone[item].count = +newCount;
         }
       });
-      firebase
-        .firestore()
-        .collection("orders")
-        .doc(profile.uid)
-        .set({
-          ordersData: orders
-        })
-        .then(result => {
-          getOrders(
-            profile.uid,
-            orders => dispatch(setOrders(orders)),
-            setFetching
-          );
-        })
-        .catch(err => console.log(err));
+      setOrdersData(ordersClone);
+
+      updateOrderDebounceHandler(() => {
+        firebase
+          .firestore()
+          .collection("orders")
+          .doc(profile.uid)
+          .set({
+            ordersData: orders
+          })
+          .then(result => {
+            getOrders(
+              profile.uid,
+              orders => dispatch(setOrders(orders)),
+              setFetching
+            );
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      });
     } else {
       getOrders(
         profile.uid,
@@ -81,10 +105,11 @@ const BasketProduct = () => {
   };
 
   const deleteOrderHandler = (order: IOrderElement) => {
-    setFetching(true);
-    const newOrdersList = orders.filter(
+    const newOrdersList = ordersData.filter(
       elem => elem.goodsData.goodId !== order.goodsData.goodId
     );
+
+    setOrdersData(newOrdersList);
     firebase
       .firestore()
       .collection("orders")
@@ -111,47 +136,52 @@ const BasketProduct = () => {
       userName: profile.displayName || profile.email || profile.phoneNumber
     };
 
-    console.log(data, ">>>");
+    try {
+      const response = await firebase
+        .firestore()
+        .collection("successOrders")
+        .add(data);
 
-    // try {
-    //   const response = await firebase
-    //     .firestore()
-    //     .collection("successOrders")
-    //     .add(data);
-    //   if (response.id) {
-    //     await firebase
-    //       .firestore()
-    //       .collection("successOrders")
-    //       .doc(response.id)
-    //       .update({
-    //         ...data,
-    //         id: response.id
-    //       });
-    //     firebase
-    //       .firestore()
-    //       .collection("orders")
-    //       .doc(profile.uid)
-    //       .delete()
-    //       .then(res => {
-    //         dispatch(setOrders([]));
-    //         // setOrderStatus(true);
-    //       });
-    //   }
-    // } catch (err) {
-    //   return;
-    // }
+      if (response.id) {
+        const result = await firebase
+          .firestore()
+          .collection("successOrders")
+          .doc(response.id)
+          .update({
+            ...data,
+            id: response.id
+          });
+        firebase
+          .firestore()
+          .collection("orders")
+          .doc(profile.uid)
+          .delete()
+          .then(res => {
+            dispatch(setOrders([]));
+            setOrderSuccess(true);
+            setTimeout(() => {
+              setOrderSuccess(false);
+            }, 1000);
+          });
+      }
+    } catch (err) {
+      return;
+    }
   };
 
   return (
     <MainContainer>
       {isFetching ? (
         <ActivityIndicator />
+      ) : isOrderSuccess ? (
+        <OrderSuccessScreen />
       ) : (
         <BasketContainer
           updateOrderCountHandler={updateOrderCountHandler}
           deleteOrderHandler={deleteOrderHandler}
           summaryOrderPrice={summaryOrderPrice}
           submitHandlerOrder={submitHandlerOrder}
+          ordersData={ordersData}
         />
       )}
     </MainContainer>

@@ -1,6 +1,5 @@
 import React from "react";
 import { TouchableHighlight } from "react-native";
-import { useSelector } from "react-redux";
 
 import {
   MainContainer,
@@ -16,9 +15,11 @@ import {
   SummaryOrder,
   SubmitButton,
   SumaryPriceText,
-  SummaryPrice
+  SummaryPrice,
+  MainBasketContainer,
+  NoOrdersMessage
 } from "./styles";
-import { IOrdersReducers, IOrderElement } from "../../../../utils/interfaces";
+import { IOrderElement } from "../../../../utils/interfaces";
 import plus from "../../../../img/plusOrder.png";
 import minus from "../../../../img/minusOrder.png";
 import Input from "../../../../components/inputs/input";
@@ -31,69 +32,77 @@ interface IProps {
   deleteOrderHandler: (order: IOrderElement) => void;
   summaryOrderPrice: number;
   submitHandlerOrder: () => void;
+  ordersData: IOrderElement[];
 }
 
 const BasketContainer = ({
   updateOrderCountHandler,
   deleteOrderHandler,
   summaryOrderPrice,
-  submitHandlerOrder
+  submitHandlerOrder,
+  ordersData
 }: IProps) => {
-  const orders = useSelector<IOrdersReducers, IOrderElement[]>(
-    state => state.orders
-  );
-
   return (
-    <MainContainer contentContainerStyle={{ alignItems: "center" }}>
-      <SummaryOrder>
-        <SumaryPriceText>
-          Вместе: <SummaryPrice>{summaryOrderPrice}$</SummaryPrice>
-        </SumaryPriceText>
-        <SubmitButton onPress={submitHandlerOrder}>Оформить заказ</SubmitButton>
-      </SummaryOrder>
-      {orders.map(elem => {
-        const { goodsData, count } = elem;
-        const { goodName, goodId, pictureUrl, price } = goodsData;
+    <MainBasketContainer>
+      {ordersData.length > 0 && (
+        <SummaryOrder>
+          <SumaryPriceText>
+            Вместе: <SummaryPrice>{summaryOrderPrice}$</SummaryPrice>
+          </SumaryPriceText>
+          <SubmitButton onPress={submitHandlerOrder}>
+            Оформить заказ
+          </SubmitButton>
+        </SummaryOrder>
+      )}
+      <MainContainer contentContainerStyle={{ alignItems: "center" }}>
+        {ordersData.length < 1 ? (
+          <NoOrdersMessage>Ваша корзина пуста.</NoOrdersMessage>
+        ) : (
+          ordersData.map(elem => {
+            const { goodsData, count } = elem;
+            const { goodName, goodId, pictureUrl, price } = goodsData;
 
-        return (
-          <OrderElement key={goodId}>
-            <DeleteOrderButtom onPress={() => deleteOrderHandler(elem)}>
-              <DeletePicture source={plus} />
-            </DeleteOrderButtom>
-            <ItemPicture
-              source={{
-                uri: pictureUrl
-              }}
-              resizeMode={"contain"}
-            />
-            <Name>{goodName}</Name>
-            <Price>${price}</Price>
-            <CountControlContainer>
-              <TouchableHighlight
-                onPress={() => updateOrderCountHandler(count - 1, elem)}
-              >
-                <ControlButtons source={minus} />
-              </TouchableHighlight>
+            return (
+              <OrderElement key={goodId}>
+                <DeleteOrderButtom onPress={() => deleteOrderHandler(elem)}>
+                  <DeletePicture source={plus} />
+                </DeleteOrderButtom>
+                <ItemPicture
+                  source={{
+                    uri: pictureUrl
+                  }}
+                  resizeMode={"contain"}
+                />
+                <Name>{goodName}</Name>
+                <Price>${price}</Price>
+                <CountControlContainer>
+                  <TouchableHighlight
+                    onPress={() => updateOrderCountHandler(count - 1, elem)}
+                  >
+                    <ControlButtons source={minus} />
+                  </TouchableHighlight>
 
-              <Input
-                StyledComponent={ControlInput}
-                onChangeText={(text, name) =>
-                  updateOrderCountHandler(text, elem)
-                }
-                defaultValue={count + ""}
-                name="orderCount"
-                keyboardType="numeric"
-              />
-              <TouchableHighlight
-                onPress={() => updateOrderCountHandler(count + 1, elem)}
-              >
-                <ControlButtons source={plus} />
-              </TouchableHighlight>
-            </CountControlContainer>
-          </OrderElement>
-        );
-      })}
-    </MainContainer>
+                  <Input
+                    StyledComponent={ControlInput}
+                    onChangeText={(text, name) => {
+                      updateOrderCountHandler(text, elem);
+                    }}
+                    defaultValue={count + ""}
+                    name="orderCount"
+                    keyboardType="numeric"
+                  />
+                  <TouchableHighlight
+                    onPress={() => updateOrderCountHandler(count + 1, elem)}
+                  >
+                    <ControlButtons source={plus} />
+                  </TouchableHighlight>
+                </CountControlContainer>
+              </OrderElement>
+            );
+          })
+        )}
+      </MainContainer>
+    </MainBasketContainer>
   );
 };
 
