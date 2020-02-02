@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, ActivityIndicator, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -15,6 +15,7 @@ import {
 import firebase from "../../../utils/firebase";
 import { getOrders } from "../../../utils/handlers";
 import { setOrders } from "../../../store/actions";
+import { debounce } from "../../../utils/handlers";
 
 const MainContainer = styled(View)`
   display: flex;
@@ -24,21 +25,12 @@ const MainContainer = styled(View)`
   width: ${Dimensions.get("window").width};
 `;
 
-const debounce = (delay: number) => {
-  let debounceTimer: any;
-  return (onClickHandler: () => void) => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => onClickHandler(), delay);
-  };
-};
-
-const updateOrderDebounceHandler = debounce(1000);
-
 const BasketProduct = () => {
-  const [isFetching, setFetching] = useState(false);
+  const [isFetching, setFetching] = useState(true);
   const [isOrderSuccess, setOrderSuccess] = useState(false);
   const [summaryOrderPrice, setSummaryOrderPrice] = useState<number>(0);
   const [ordersData, setOrdersData] = useState<IOrderElement[]>([]);
+  const updateOrderDebounceHandler = useCallback(debounce(1000), []);
 
   const dispatch = useDispatch();
 
@@ -52,6 +44,7 @@ const BasketProduct = () => {
 
   useEffect(() => {
     setOrdersData(orders);
+    setFetching(false);
   }, [orders]);
 
   useEffect(() => {

@@ -67,3 +67,11 @@ export const buyButtonHandler = ({
     })
     .catch(err => console.log(err));
 };
+
+export const debounce = (delay: number) => {
+  let debounceTimer: any;
+  return (onClickHandler: () => void) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => onClickHandler(), delay);
+  };
+};

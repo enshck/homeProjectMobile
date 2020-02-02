@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableHighlight } from "react-native";
+import { TouchableOpacity } from "react-native";
 
 import {
   MainContainer,
@@ -76,11 +76,11 @@ const BasketContainer = ({
                 <Name>{goodName}</Name>
                 <Price>${price}</Price>
                 <CountControlContainer>
-                  <TouchableHighlight
+                  <TouchableOpacity
                     onPress={() => updateOrderCountHandler(count - 1, elem)}
                   >
                     <ControlButtons source={minus} />
-                  </TouchableHighlight>
+                  </TouchableOpacity>
 
                   <Input
                     StyledComponent={ControlInput}
@@ -91,11 +91,11 @@ const BasketContainer = ({
                     name="orderCount"
                     keyboardType="numeric"
                   />
-                  <TouchableHighlight
+                  <TouchableOpacity
                     onPress={() => updateOrderCountHandler(count + 1, elem)}
                   >
                     <ControlButtons source={plus} />
-                  </TouchableHighlight>
+                  </TouchableOpacity>
                 </CountControlContainer>
               </OrderElement>
             );

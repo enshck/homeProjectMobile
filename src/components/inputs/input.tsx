@@ -103,7 +103,6 @@ const Input = ({
           autoFocus={autoFocus}
           disabled={isBlocked}
           error={errors && errors[name]}
-          // onChangedText={(text: string) => console.log(text, "<<<<")}
         />
       </InputContainer>
       {errors && errors[name] && <ErrorMessage>{errors[name]}</ErrorMessage>}
