@@ -16,6 +16,7 @@ import productIcon from "./img/product.png";
 import basketIcon from "./img/basket.png";
 import exit from "./img/exit.png";
 import arrowLeft from "./img/arrowLeft.png";
+import admin from "./img/admin.png";
 import { signOutHandler } from "./utils/handlers";
 
 const NavImage = styled(Image)`
@@ -71,6 +72,8 @@ const getTabBarIcon = (navigation: any) => {
     );
   } else if (routeName === "Выход") {
     return <NavImage source={exit} />;
+  } else if (routeName === "Админ") {
+    return <NavImage source={admin} />;
   }
 };
 
@@ -90,8 +93,8 @@ const PrivateStack = createBottomTabNavigator(
       };
     },
     tabBarOptions: {
-      activeTintColor: "tomato",
-      inactiveTintColor: "gray"
+      activeTintColor: "#666666",
+      inactiveTintColor: "#CCCCCC"
     }
   }
 );
@@ -112,8 +115,8 @@ const ProtectedStack = createBottomTabNavigator(
       };
     },
     tabBarOptions: {
-      activeTintColor: "tomato",
-      inactiveTintColor: "gray"
+      activeTintColor: "#666666",
+      inactiveTintColor: "#CCCCCC"
     }
   }
 );
