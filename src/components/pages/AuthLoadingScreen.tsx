@@ -23,7 +23,7 @@ const AuthLoadingScreen = ({
           .firestore()
           .collection("successOrders")
           .get()
-          .then(() => {
+          .then(res => {
             navigation.navigate("ProtectedStack");
           })
           .catch(() => {

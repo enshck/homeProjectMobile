@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from "react";
 import firebase from "react-native-firebase";
 
 import { useDispatch } from "react-redux";
-import { setOrders, setProfileData } from "../store/actions";
+import { setOrders, setProfileData, setAdminOrders } from "../store/actions";
 
 interface IProps {
   children: any;
@@ -23,6 +23,16 @@ const MainWrapper = ({ children }: IProps) => {
           .then(doc => {
             const docData = doc.data();
             dispatch(setOrders(docData));
+            firebase
+              .firestore()
+              .collection("successOrders")
+              .get()
+              .then(async doc => {
+                dispatch(
+                  setAdminOrders(await doc.docs.map(item => item.data()))
+                );
+              })
+              .catch(err => console.log(err, "err"));
           });
       }
     });

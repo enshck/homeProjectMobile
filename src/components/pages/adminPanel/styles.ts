@@ -1,60 +1,31 @@
-import React, { useState } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
-import { View as NotAnimationView, Text, Animated } from "react-native";
-const { Value, View } = Animated;
+import { View, Text, Animated } from "react-native";
 
-export const MainContainer = styled(NotAnimationView)`
+export const MainContainer = styled(View)`
   width: 100%;
+  display: flex;
+  align-items: center;
 `;
 
-export const List = styled(NotAnimationView)`
+export const List = styled(View)`
   width: 300px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   position: relative;
+  margin-top: 10px;
+  padding-bottom: 5px;
 `;
 
-export const MenuElement = styled(Text)``;
+export const MenuElement = styled(Text)`
+  font-size: 15px;
+`;
 
-export const MenuSlider = styled(View)`
-  border: 2px solid blue;
+export const MenuSlider = styled(Animated.View)`
+  border: 1px solid blue;
   position: absolute;
   bottom: 0;
-  /* transition: 0.5s; */
-  ${({ mode }: { mode: String }) =>
-    mode === "orders" &&
-    css`
-      left: 0;
-      width: 55px;
-    `}
-  ${({ mode }: { mode: String }) =>
-    mode === "addGoods" &&
-    css`
-      left: 140px;
-      width: 160px;
-    `}
+  left: ${props => props.left};
+  width: ${props => props.width};
 `;
-
-// export const AnimatedMenuSlider = props => {
-//   const [fadeAnim] = useState(new Value(0)); // Initial value for opacity: 0
-
-//   React.useEffect(() => {
-//     Animated.timing(fadeAnim, {
-//       toValue: 1,
-//       duration: 10000
-//     }).start();
-//   }, []);
-
-//   return (
-//     <View // Special animatable View
-//     // style={{
-//     //   ...props.style,
-//     //   opacity: fadeAnim,         // Bind opacity to animated value
-//     // }}
-//     >
-//       sd // {props.children}
-//     </View>
-//   );
-// };
